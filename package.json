@@ -1,0 +1,54 @@
+{
+  "name": "lightrag-mcp",
+  "version": "0.0.0",
+  "description": "MCP server for LightRag",
+  "main": "index.js",
+  "module": "index.es6.js",
+  "jsnext:main": "index.es6.js",
+  "types": "index.d.ts",
+  "private": true,
+  "scripts": {
+    "build": "innetjs release -e",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "release": "innetjs release -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d8corp/lightrag-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "server",
+    "lightrag",
+    "rag"
+  ],
+  "author": "Mikhail Lysikov <d8corp@mail.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/d8corp/lightrag-mcp/issues"
+  },
+  "homepage": "https://github.com/d8corp/lightrag-mcp",
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.6.0",
+    "eslint": "^9.39.2",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest": "^29.14.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "innetjs": "^3.2.1",
+    "jest": "^30.3.0",
+    "jest-util": "^30.3.0",
+    "neostandard": "^0.13.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.58.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0-alpha.2",
+    "zod": "^4.3.6"
+  }
+}
