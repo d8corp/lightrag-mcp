@@ -67,7 +67,7 @@ interface SDKParams<T, E> {
   request: Request
 }
 
-export type LightRagServerInnerParams = Required<LightRagServerParams>
+type LightRagServerInnerParams = Required<LightRagServerParams>
 
 export class LightRagServer {
   private readonly server: McpServer
