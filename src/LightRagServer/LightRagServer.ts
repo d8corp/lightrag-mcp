@@ -49,23 +49,23 @@ export class LightRagServer {
     sdkCall: Promise<SDKParams<T, E>>,
   ): Promise<CallToolResult> {
     try {
-      const result = await sdkCall
+      const { error, data, response } = await sdkCall
 
-      if (result.error) {
+      if (error) {
         return {
           content: [{
             type: 'text',
-            text: `Error: ${JSON.stringify(result.error, null, 2)}`,
+            text: `Error: ${JSON.stringify(error, null, 2)}`,
           }],
           isError: true,
         }
       }
 
-      if (!result.response.ok) {
+      if (!response.ok) {
         return {
           content: [{
             type: 'text',
-            text: `HTTP ${result.response.status}: ${result.response.statusText}`,
+            text: `HTTP ${response.status}: ${response.statusText}`,
           }],
           isError: true,
         }
@@ -74,7 +74,7 @@ export class LightRagServer {
       return {
         content: [{
           type: 'text',
-          text: JSON.stringify(result.data, null, 2),
+          text: JSON.stringify(data, null, 2),
         }],
       }
     } catch (error) {
