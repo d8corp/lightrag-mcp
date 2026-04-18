@@ -1,21 +1,29 @@
 import type { CallToolResult, Implementation, ServerOptions } from '@modelcontextprotocol/server'
 import { McpServer, StdioServerTransport } from '@modelcontextprotocol/server'
-import * as z from 'zod/v4'
+
+import { insertTextDocumentsTextPost } from '../gen'
+import type { Client, ClientOptions } from '../gen/client'
+import { createClient, createConfig } from '../gen/client'
+
+import { zInsertTextRequest } from '../gen/zod.gen'
 
 export interface LightRagServerParams {
-  baseUrl?: string
   implementation?: Implementation
-  options?: ServerOptions
+  serverOptions?: ServerOptions
+  clientOptions?: ClientOptions
 }
 
+export type LightRagServerInnerParams = Required<LightRagServerParams>
+
 export class LightRagServer {
-  readonly server: McpServer
-  readonly params: Required<LightRagServerParams>
+  private readonly server: McpServer
+  private readonly params: LightRagServerInnerParams
+  private readonly client: Client
 
   constructor (params: LightRagServerParams = {}) {
     this.params = {
-      baseUrl: 'http://localhost:9621',
-      options: {},
+      serverOptions: {},
+      clientOptions: {},
       ...params,
       implementation: {
         name: 'lightrag-mcp',
@@ -24,31 +32,36 @@ export class LightRagServer {
       },
     }
 
-    this.server = new McpServer(this.params.implementation, this.params.options)
-    this.registerTools()
+    this.client = createClient(createConfig(this.params.clientOptions))
+    this.server = new McpServer(this.params.implementation, this.params.serverOptions)
+
+    this.init()
   }
 
-  private registerTools (): void {
+  private registerInsertText () {
     this.server.registerTool(
       'insert_text',
       {
         title: 'Insert Text',
         description: 'Add text content to LightRAG with a specified filename',
-        inputSchema: z.object({
-          text: z.string().describe('Text content to insert'),
-          filename: z.string().optional().default('mcp.md').describe('Optional filename with extension (default: mcp.md)'),
-        }),
+        inputSchema: zInsertTextRequest,
       },
-      async ({ text, filename }): Promise<CallToolResult> => {
+      async (body): Promise<CallToolResult> => {
         try {
-          const response = await fetch(`${this.params.baseUrl}/documents/text`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              text,
-              file_source: filename,
-            }),
+          const { response, error, data } = await insertTextDocumentsTextPost({
+            client: this.client,
+            body,
           })
+
+          if (error) {
+            return {
+              content: [{
+                type: 'text',
+                text: `Error: ${JSON.stringify(error, null, 2)}`,
+              }],
+              isError: true,
+            }
+          }
 
           if (!response.ok) {
             return {
@@ -60,12 +73,10 @@ export class LightRagServer {
             }
           }
 
-          const result = await response.json()
-
           return {
             content: [{
               type: 'text',
-              text: JSON.stringify(result, null, 2),
+              text: JSON.stringify(data, null, 2),
             }],
           }
         } catch (error) {
@@ -79,6 +90,10 @@ export class LightRagServer {
         }
       },
     )
+  }
+
+  private init (): void {
+    this.registerInsertText()
   }
 
   async start (): Promise<void> {
