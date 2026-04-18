@@ -15,6 +15,7 @@ import {
   getDocumentStatusCountsDocumentsStatusCountsGet,
   getGraphLabelsGraphLabelListGet,
   getPipelineStatusDocumentsPipelineStatusGet,
+  getTrackStatusDocumentsTrackStatusTrackIdGet,
   insertTextDocumentsTextPost,
   insertTextsDocumentsTextsPost,
   mergeEntitiesGraphEntitiesMergePost,
@@ -37,6 +38,7 @@ import {
   zEntityCreateRequest,
   zEntityMergeRequest,
   zEntityUpdateRequest,
+  zGetTrackStatusDocumentsTrackStatusTrackIdGetPath,
   zInsertTextRequest,
   zInsertTextsRequest,
   zQueryRequest,
@@ -475,12 +477,30 @@ export class LightRagServer {
     )
   }
 
+  private registerGetTrackStatus (): void {
+    this.server.registerTool(
+      'get_track_status',
+      {
+        title: 'Get Track Status',
+        description: 'Get the processing status of documents by tracking ID',
+        inputSchema: zGetTrackStatusDocumentsTrackStatusTrackIdGetPath,
+      },
+      async (path) => this.handleSdkCall(
+        getTrackStatusDocumentsTrackStatusTrackIdGet({
+          client: this.client,
+          path,
+        }),
+      ),
+    )
+  }
+
   private init (): void {
     this.registerInsertText()
     this.registerInsertTexts()
     this.registerScanDocuments()
     this.registerGetDocumentsPaginated()
     this.registerGetDocumentStatusCounts()
+    this.registerGetTrackStatus()
     this.registerDeleteDocument()
     this.registerClearDocuments()
     this.registerClearCache()
