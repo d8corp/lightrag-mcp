@@ -1,3 +1,1 @@
-import { LightRagServer } from './LightRagServer'
-
-new LightRagServer().start()
+export * from './LightRagServer'

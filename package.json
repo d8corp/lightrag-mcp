@@ -3,10 +3,14 @@
   "version": "0.0.0",
   "description": "MCP server for LightRag",
   "main": "index.js",
-  "module": "index.es6.js",
-  "jsnext:main": "index.es6.js",
+  "module": "index.mjs",
+  "esnext": "index.mjs",
+  "jsnext:main": "index.mjs",
   "types": "index.d.ts",
   "private": true,
+  "bin": {
+    "lightrag-mcp": "bin/innet"
+  },
   "scripts": {
     "build": "innetjs release -e",
     "test": "jest",
@@ -51,6 +55,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0-alpha.2",
+    "commander": "^14.0.3",
+    "dotenv": "^17.4.2",
+    "dotenv-expand": "^13.0.0",
     "zod": "^4.3.6"
   }
 }
