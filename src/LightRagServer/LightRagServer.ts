@@ -1,5 +1,6 @@
 import type { CallToolResult, Implementation, ServerOptions } from '@modelcontextprotocol/server'
 import { McpServer, StdioServerTransport } from '@modelcontextprotocol/server'
+import * as z from 'zod'
 
 import {
   clearCacheDocumentsClearCachePost,
@@ -14,6 +15,7 @@ import {
   mergeEntitiesGraphEntitiesMergePost,
   queryDataQueryDataPost,
   queryTextQueryPost,
+  scanForNewDocumentsDocumentsScanPost,
   updateEntityGraphEntityEditPost,
   updateRelationGraphRelationEditPost,
 } from '../gen'
@@ -355,9 +357,26 @@ export class LightRagServer {
     )
   }
 
+  private registerScanDocuments (): void {
+    this.server.registerTool(
+      'scan_documents',
+      {
+        title: 'Scan Documents',
+        description: 'Trigger scanning process for new documents in the input directory',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        scanForNewDocumentsDocumentsScanPost({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
   private init (): void {
     this.registerInsertText()
     this.registerInsertTexts()
+    this.registerScanDocuments()
     this.registerQueryText()
     this.registerQueryData()
     this.registerGetDocumentsPaginated()
