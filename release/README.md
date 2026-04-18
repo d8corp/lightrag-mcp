@@ -85,8 +85,7 @@ Add to your Claude Desktop configuration file:
 {
   "mcpServers": {
     "lightrag": {
-      "command": "npx",
-      "args": ["lightrag-mcp"],
+      "command": "lightrag-mcp",
       "env": {
         "LIGHTRAG_BASE_URL": "https://rag.example.com",
         "LIGHTRAG_API_KEY": "your-api-key"
@@ -94,6 +93,23 @@ Add to your Claude Desktop configuration file:
     }
   }
 }
+```
+
+### Other MCP Clients (YAML)
+
+For MCP clients and plugins that support YAML configuration:
+
+```yaml
+name: LightRAG MCP Server
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: LightRag
+    type: stdio
+    command: lightrag-mcp
+    env:
+      LIGHTRAG_BASE_URL: "https://rag.example.com"
+      LIGHTRAG_API_KEY: "your-api-key"
 ```
 
 ## Available Tools

@@ -1,36 +1,14 @@
 #!/usr/bin/env node
-'use strict';
-
-var commander = require('commander');
-var dotenv = require('dotenv');
-var dotenvExpand = require('dotenv-expand');
-var server = require('@modelcontextprotocol/server');
-var z = require('zod');
-
-function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
-    var n = Object.create(null);
-    if (e) {
-        Object.keys(e).forEach(function (k) {
-            if (k !== 'default') {
-                var d = Object.getOwnPropertyDescriptor(e, k);
-                Object.defineProperty(n, k, d.get ? d : {
-                    enumerable: true,
-                    get: function () { return e[k]; }
-                });
-            }
-        });
-    }
-    n["default"] = e;
-    return Object.freeze(n);
-}
-
-var z__namespace = /*#__PURE__*/_interopNamespace(z);
+import { program } from 'commander';
+import { config } from 'dotenv';
+import { expand } from 'dotenv-expand';
+import { McpServer, StdioServerTransport } from '@modelcontextprotocol/server';
+import * as z from 'zod';
 
 function updateDotenv() {
     const { __MCP__PACKAGE_VERSION: before } = process.env;
     delete process.env.__MCP__PACKAGE_VERSION;
-    dotenvExpand.expand(dotenv.config());
+    expand(config());
     if (!('__MCP__PACKAGE_VERSION' in process.env)) {
         process.env.__MCP__PACKAGE_VERSION = before;
     }
@@ -848,19 +826,19 @@ const client = createClient(createConfig());
 /**
  * Body_login_login_post
  */
-z__namespace.object({
-    grant_type: z__namespace.string().regex(/^password$/).nullish(),
-    username: z__namespace.string(),
-    password: z__namespace.string(),
-    scope: z__namespace.string().optional().default(''),
-    client_id: z__namespace.string().nullish(),
-    client_secret: z__namespace.string().nullish()
+z.object({
+    grant_type: z.string().regex(/^password$/).nullish(),
+    username: z.string(),
+    password: z.string(),
+    scope: z.string().optional().default(''),
+    client_id: z.string().nullish(),
+    client_secret: z.string().nullish()
 });
 /**
  * Body_upload_to_input_dir_documents_upload_post
  */
-z__namespace.object({
-    file: z__namespace.string()
+z.object({
+    file: z.string()
 });
 /**
  * CancelPipelineResponse
@@ -871,9 +849,9 @@ z__namespace.object({
  * status: Status of the cancellation request
  * message: Message describing the operation result
  */
-const zCancelPipelineResponse = z__namespace.object({
-    status: z__namespace.enum(['cancellation_requested', 'not_busy']),
-    message: z__namespace.string()
+const zCancelPipelineResponse = z.object({
+    status: z.enum(['cancellation_requested', 'not_busy']),
+    message: z.string()
 });
 /**
  * ClearCacheRequest
@@ -883,7 +861,7 @@ const zCancelPipelineResponse = z__namespace.object({
  * This model is kept for API compatibility but no longer accepts any parameters.
  * All cache will be cleared regardless of the request content.
  */
-const zClearCacheRequest = z__namespace.record(z__namespace.string(), z__namespace.unknown());
+const zClearCacheRequest = z.record(z.string(), z.unknown());
 /**
  * ClearCacheResponse
  *
@@ -893,9 +871,9 @@ const zClearCacheRequest = z__namespace.record(z__namespace.string(), z__namespa
  * status: Status of the clear operation
  * message: Detailed message describing the operation result
  */
-const zClearCacheResponse = z__namespace.object({
-    status: z__namespace.enum(['success', 'fail']),
-    message: z__namespace.string()
+const zClearCacheResponse = z.object({
+    status: z.enum(['success', 'fail']),
+    message: z.string()
 });
 /**
  * ClearDocumentsResponse
@@ -906,73 +884,73 @@ const zClearCacheResponse = z__namespace.object({
  * status: Status of the clear operation
  * message: Detailed message describing the operation result
  */
-const zClearDocumentsResponse = z__namespace.object({
-    status: z__namespace.enum([
+const zClearDocumentsResponse = z.object({
+    status: z.enum([
         'success',
         'partial_success',
         'busy',
         'fail'
     ]),
-    message: z__namespace.string()
+    message: z.string()
 });
 /**
  * DeleteDocByIdResponse
  *
  * Response model for single document deletion operation.
  */
-const zDeleteDocByIdResponse = z__namespace.object({
-    status: z__namespace.enum([
+const zDeleteDocByIdResponse = z.object({
+    status: z.enum([
         'deletion_started',
         'busy',
         'not_allowed'
     ]),
-    message: z__namespace.string(),
-    doc_id: z__namespace.string()
+    message: z.string(),
+    doc_id: z.string()
 });
 /**
  * DeleteDocRequest
  */
-const zDeleteDocRequest = z__namespace.object({
-    doc_ids: z__namespace.array(z__namespace.string()),
-    delete_file: z__namespace.boolean().optional().default(false),
-    delete_llm_cache: z__namespace.boolean().optional().default(false)
+const zDeleteDocRequest = z.object({
+    doc_ids: z.array(z.string()),
+    delete_file: z.boolean().optional().default(false),
+    delete_llm_cache: z.boolean().optional().default(false)
 });
 /**
  * DeleteEntityRequest
  */
-const zDeleteEntityRequest = z__namespace.object({
-    entity_name: z__namespace.string()
+const zDeleteEntityRequest = z.object({
+    entity_name: z.string()
 });
 /**
  * DeleteRelationRequest
  */
-const zDeleteRelationRequest = z__namespace.object({
-    source_entity: z__namespace.string(),
-    target_entity: z__namespace.string()
+const zDeleteRelationRequest = z.object({
+    source_entity: z.string(),
+    target_entity: z.string()
 });
 /**
  * DeletionResult
  *
  * Represents the result of a deletion operation.
  */
-const zDeletionResult = z__namespace.object({
-    status: z__namespace.enum([
+const zDeletionResult = z.object({
+    status: z.enum([
         'success',
         'not_found',
         'not_allowed',
         'fail'
     ]),
-    doc_id: z__namespace.string(),
-    message: z__namespace.string(),
-    status_code: z__namespace.int().optional().default(200),
-    file_path: z__namespace.string().nullish()
+    doc_id: z.string(),
+    message: z.string(),
+    status_code: z.int().optional().default(200),
+    file_path: z.string().nullish()
 });
 /**
  * DocStatus
  *
  * Document processing status
  */
-const zDocStatus = z__namespace.enum([
+const zDocStatus = z.enum([
     'pending',
     'processing',
     'preprocessed',
@@ -982,18 +960,18 @@ const zDocStatus = z__namespace.enum([
 /**
  * DocStatusResponse
  */
-const zDocStatusResponse = z__namespace.object({
-    id: z__namespace.string(),
-    content_summary: z__namespace.string(),
-    content_length: z__namespace.int(),
+const zDocStatusResponse = z.object({
+    id: z.string(),
+    content_summary: z.string(),
+    content_length: z.int(),
     status: zDocStatus,
-    created_at: z__namespace.string(),
-    updated_at: z__namespace.string(),
-    track_id: z__namespace.string().nullish(),
-    chunks_count: z__namespace.int().nullish(),
-    error_msg: z__namespace.string().nullish(),
-    metadata: z__namespace.record(z__namespace.string(), z__namespace.unknown()).nullish(),
-    file_path: z__namespace.string()
+    created_at: z.string(),
+    updated_at: z.string(),
+    track_id: z.string().nullish(),
+    chunks_count: z.int().nullish(),
+    error_msg: z.string().nullish(),
+    metadata: z.record(z.string(), z.unknown()).nullish(),
+    file_path: z.string()
 });
 /**
  * DocsStatusesResponse
@@ -1003,8 +981,8 @@ const zDocStatusResponse = z__namespace.object({
  * Attributes:
  * statuses: Dictionary mapping document status to lists of document status responses
  */
-z__namespace.object({
-    statuses: z__namespace.record(z__namespace.string(), z__namespace.array(zDocStatusResponse)).optional()
+z.object({
+    statuses: z.record(z.string(), z.array(zDocStatusResponse)).optional()
 });
 /**
  * DocumentsRequest
@@ -1018,40 +996,40 @@ z__namespace.object({
  * sort_field: Field to sort by ('created_at', 'updated_at', 'id', 'file_path')
  * sort_direction: Sort direction ('asc' or 'desc')
  */
-const zDocumentsRequest = z__namespace.object({
+const zDocumentsRequest = z.object({
     status_filter: zDocStatus.nullish(),
-    page: z__namespace.int().gte(1).optional().default(1),
-    page_size: z__namespace.int().gte(10).lte(200).optional().default(50),
-    sort_field: z__namespace.enum([
+    page: z.int().gte(1).optional().default(1),
+    page_size: z.int().gte(10).lte(200).optional().default(50),
+    sort_field: z.enum([
         'created_at',
         'updated_at',
         'id',
         'file_path'
     ]).optional().default('updated_at'),
-    sort_direction: z__namespace.enum(['asc', 'desc']).optional().default('desc')
+    sort_direction: z.enum(['asc', 'desc']).optional().default('desc')
 });
 /**
  * EntityCreateRequest
  */
-const zEntityCreateRequest = z__namespace.object({
-    entity_name: z__namespace.string().min(1),
-    entity_data: z__namespace.record(z__namespace.string(), z__namespace.unknown())
+const zEntityCreateRequest = z.object({
+    entity_name: z.string().min(1),
+    entity_data: z.record(z.string(), z.unknown())
 });
 /**
  * EntityMergeRequest
  */
-const zEntityMergeRequest = z__namespace.object({
-    entities_to_change: z__namespace.array(z__namespace.string()).min(1),
-    entity_to_change_into: z__namespace.string().min(1)
+const zEntityMergeRequest = z.object({
+    entities_to_change: z.array(z.string()).min(1),
+    entity_to_change_into: z.string().min(1)
 });
 /**
  * EntityUpdateRequest
  */
-const zEntityUpdateRequest = z__namespace.object({
-    entity_name: z__namespace.string(),
-    updated_data: z__namespace.record(z__namespace.string(), z__namespace.unknown()),
-    allow_rename: z__namespace.boolean().optional().default(false),
-    allow_merge: z__namespace.boolean().optional().default(false)
+const zEntityUpdateRequest = z.object({
+    entity_name: z.string(),
+    updated_data: z.record(z.string(), z.unknown()),
+    allow_rename: z.boolean().optional().default(false),
+    allow_merge: z.boolean().optional().default(false)
 });
 /**
  * InsertResponse
@@ -1063,15 +1041,15 @@ const zEntityUpdateRequest = z__namespace.object({
  * message: Detailed message describing the operation result
  * track_id: Tracking ID for monitoring processing status
  */
-const zInsertResponse = z__namespace.object({
-    status: z__namespace.enum([
+const zInsertResponse = z.object({
+    status: z.enum([
         'success',
         'duplicated',
         'partial_success',
         'failure'
     ]),
-    message: z__namespace.string(),
-    track_id: z__namespace.string()
+    message: z.string(),
+    track_id: z.string()
 });
 /**
  * InsertTextRequest
@@ -1082,9 +1060,9 @@ const zInsertResponse = z__namespace.object({
  * text: The text content to be inserted into the RAG system
  * file_source: Source of the text (optional)
  */
-const zInsertTextRequest = z__namespace.object({
-    text: z__namespace.string().min(1),
-    file_source: z__namespace.string().min(0).nullish()
+const zInsertTextRequest = z.object({
+    text: z.string().min(1),
+    file_source: z.string().min(0).nullish()
 });
 /**
  * InsertTextsRequest
@@ -1095,9 +1073,9 @@ const zInsertTextRequest = z__namespace.object({
  * texts: List of text contents to be inserted into the RAG system
  * file_sources: Sources of the texts (optional)
  */
-const zInsertTextsRequest = z__namespace.object({
-    texts: z__namespace.array(z__namespace.string()).min(1),
-    file_sources: z__namespace.array(z__namespace.string()).min(0).nullish()
+const zInsertTextsRequest = z.object({
+    texts: z.array(z.string()).min(1),
+    file_sources: z.array(z.string()).min(0).nullish()
 });
 /**
  * PaginationInfo
@@ -1112,13 +1090,13 @@ const zInsertTextsRequest = z__namespace.object({
  * has_next: Whether there is a next page
  * has_prev: Whether there is a previous page
  */
-const zPaginationInfo = z__namespace.object({
-    page: z__namespace.int(),
-    page_size: z__namespace.int(),
-    total_count: z__namespace.int(),
-    total_pages: z__namespace.int(),
-    has_next: z__namespace.boolean(),
-    has_prev: z__namespace.boolean()
+const zPaginationInfo = z.object({
+    page: z.int(),
+    page_size: z.int(),
+    total_count: z.int(),
+    total_pages: z.int(),
+    has_next: z.boolean(),
+    has_prev: z.boolean()
 });
 /**
  * PaginatedDocsResponse
@@ -1130,10 +1108,10 @@ const zPaginationInfo = z__namespace.object({
  * pagination: Pagination information
  * status_counts: Count of documents by status for all documents
  */
-const zPaginatedDocsResponse = z__namespace.object({
-    documents: z__namespace.array(zDocStatusResponse),
+const zPaginatedDocsResponse = z.object({
+    documents: z.array(zDocStatusResponse),
     pagination: zPaginationInfo,
-    status_counts: z__namespace.record(z__namespace.string(), z__namespace.int())
+    status_counts: z.record(z.string(), z.int())
 });
 /**
  * PipelineStatusResponse
@@ -1153,34 +1131,34 @@ const zPaginatedDocsResponse = z__namespace.object({
  * history_messages: List of history messages
  * update_status: Status of update flags for all namespaces
  */
-const zPipelineStatusResponse = z__namespace.object({
-    autoscanned: z__namespace.boolean().optional().default(false),
-    busy: z__namespace.boolean().optional().default(false),
-    job_name: z__namespace.string().optional().default('Default Job'),
-    job_start: z__namespace.string().nullish(),
-    docs: z__namespace.int().optional().default(0),
-    batchs: z__namespace.int().optional().default(0),
-    cur_batch: z__namespace.int().optional().default(0),
-    request_pending: z__namespace.boolean().optional().default(false),
-    latest_message: z__namespace.string().optional().default(''),
-    history_messages: z__namespace.array(z__namespace.string()).nullish(),
-    update_status: z__namespace.record(z__namespace.string(), z__namespace.unknown()).nullish()
+const zPipelineStatusResponse = z.object({
+    autoscanned: z.boolean().optional().default(false),
+    busy: z.boolean().optional().default(false),
+    job_name: z.string().optional().default('Default Job'),
+    job_start: z.string().nullish(),
+    docs: z.int().optional().default(0),
+    batchs: z.int().optional().default(0),
+    cur_batch: z.int().optional().default(0),
+    request_pending: z.boolean().optional().default(false),
+    latest_message: z.string().optional().default(''),
+    history_messages: z.array(z.string()).nullish(),
+    update_status: z.record(z.string(), z.unknown()).nullish()
 });
 /**
  * QueryDataResponse
  */
-const zQueryDataResponse = z__namespace.object({
-    status: z__namespace.string(),
-    message: z__namespace.string(),
-    data: z__namespace.record(z__namespace.string(), z__namespace.unknown()),
-    metadata: z__namespace.record(z__namespace.string(), z__namespace.unknown())
+const zQueryDataResponse = z.object({
+    status: z.string(),
+    message: z.string(),
+    data: z.record(z.string(), z.unknown()),
+    metadata: z.record(z.string(), z.unknown())
 });
 /**
  * QueryRequest
  */
-const zQueryRequest = z__namespace.object({
-    query: z__namespace.string().min(3),
-    mode: z__namespace.enum([
+const zQueryRequest = z.object({
+    query: z.string().min(3),
+    mode: z.enum([
         'local',
         'global',
         'hybrid',
@@ -1188,55 +1166,55 @@ const zQueryRequest = z__namespace.object({
         'mix',
         'bypass'
     ]).optional().default('mix'),
-    only_need_context: z__namespace.boolean().nullish(),
-    only_need_prompt: z__namespace.boolean().nullish(),
-    response_type: z__namespace.string().min(1).nullish(),
-    top_k: z__namespace.int().gte(1).nullish(),
-    chunk_top_k: z__namespace.int().gte(1).nullish(),
-    max_entity_tokens: z__namespace.int().gte(1).nullish(),
-    max_relation_tokens: z__namespace.int().gte(1).nullish(),
-    max_total_tokens: z__namespace.int().gte(1).nullish(),
-    hl_keywords: z__namespace.array(z__namespace.string()).optional(),
-    ll_keywords: z__namespace.array(z__namespace.string()).optional(),
-    conversation_history: z__namespace.array(z__namespace.record(z__namespace.string(), z__namespace.unknown())).nullish(),
-    user_prompt: z__namespace.string().nullish(),
-    enable_rerank: z__namespace.boolean().nullish(),
-    include_references: z__namespace.boolean().nullish().default(true),
-    include_chunk_content: z__namespace.boolean().nullish().default(false),
-    stream: z__namespace.boolean().nullish().default(true)
+    only_need_context: z.boolean().nullish(),
+    only_need_prompt: z.boolean().nullish(),
+    response_type: z.string().min(1).nullish(),
+    top_k: z.int().gte(1).nullish(),
+    chunk_top_k: z.int().gte(1).nullish(),
+    max_entity_tokens: z.int().gte(1).nullish(),
+    max_relation_tokens: z.int().gte(1).nullish(),
+    max_total_tokens: z.int().gte(1).nullish(),
+    hl_keywords: z.array(z.string()).optional(),
+    ll_keywords: z.array(z.string()).optional(),
+    conversation_history: z.array(z.record(z.string(), z.unknown())).nullish(),
+    user_prompt: z.string().nullish(),
+    enable_rerank: z.boolean().nullish(),
+    include_references: z.boolean().nullish().default(true),
+    include_chunk_content: z.boolean().nullish().default(false),
+    stream: z.boolean().nullish().default(true)
 });
 /**
  * ReferenceItem
  *
  * A single reference item in query responses.
  */
-const zReferenceItem = z__namespace.object({
-    reference_id: z__namespace.string(),
-    file_path: z__namespace.string(),
-    content: z__namespace.array(z__namespace.string()).nullish()
+const zReferenceItem = z.object({
+    reference_id: z.string(),
+    file_path: z.string(),
+    content: z.array(z.string()).nullish()
 });
 /**
  * QueryResponse
  */
-const zQueryResponse = z__namespace.object({
-    response: z__namespace.string(),
-    references: z__namespace.array(zReferenceItem).nullish()
+const zQueryResponse = z.object({
+    response: z.string(),
+    references: z.array(zReferenceItem).nullish()
 });
 /**
  * RelationCreateRequest
  */
-const zRelationCreateRequest = z__namespace.object({
-    source_entity: z__namespace.string().min(1),
-    target_entity: z__namespace.string().min(1),
-    relation_data: z__namespace.record(z__namespace.string(), z__namespace.unknown())
+const zRelationCreateRequest = z.object({
+    source_entity: z.string().min(1),
+    target_entity: z.string().min(1),
+    relation_data: z.record(z.string(), z.unknown())
 });
 /**
  * RelationUpdateRequest
  */
-const zRelationUpdateRequest = z__namespace.object({
-    source_id: z__namespace.string(),
-    target_id: z__namespace.string(),
-    updated_data: z__namespace.record(z__namespace.string(), z__namespace.unknown())
+const zRelationUpdateRequest = z.object({
+    source_id: z.string(),
+    target_id: z.string(),
+    updated_data: z.record(z.string(), z.unknown())
 });
 /**
  * ReprocessResponse
@@ -1248,10 +1226,10 @@ const zRelationUpdateRequest = z__namespace.object({
  * message: Message describing the operation result
  * track_id: Always empty string. Reprocessed documents retain their original track_id.
  */
-const zReprocessResponse = z__namespace.object({
-    status: z__namespace.literal('reprocessing_started'),
-    message: z__namespace.string(),
-    track_id: z__namespace.string().optional().default('')
+const zReprocessResponse = z.object({
+    status: z.literal('reprocessing_started'),
+    message: z.string(),
+    track_id: z.string().optional().default('')
 });
 /**
  * ScanResponse
@@ -1263,10 +1241,10 @@ const zReprocessResponse = z__namespace.object({
  * message: Optional message with additional details
  * track_id: Tracking ID for monitoring scanning progress
  */
-const zScanResponse = z__namespace.object({
-    status: z__namespace.literal('scanning_started'),
-    message: z__namespace.string().nullish(),
-    track_id: z__namespace.string()
+const zScanResponse = z.object({
+    status: z.literal('scanning_started'),
+    message: z.string().nullish(),
+    track_id: z.string()
 });
 /**
  * StatusCountsResponse
@@ -1276,8 +1254,8 @@ const zScanResponse = z__namespace.object({
  * Attributes:
  * status_counts: Count of documents by status
  */
-const zStatusCountsResponse = z__namespace.object({
-    status_counts: z__namespace.record(z__namespace.string(), z__namespace.int())
+const zStatusCountsResponse = z.object({
+    status_counts: z.record(z.string(), z.int())
 });
 /**
  * TrackStatusResponse
@@ -1290,27 +1268,27 @@ const zStatusCountsResponse = z__namespace.object({
  * total_count: Total number of documents for this track_id
  * status_summary: Count of documents by status
  */
-const zTrackStatusResponse = z__namespace.object({
-    track_id: z__namespace.string(),
-    documents: z__namespace.array(zDocStatusResponse),
-    total_count: z__namespace.int(),
-    status_summary: z__namespace.record(z__namespace.string(), z__namespace.int())
+const zTrackStatusResponse = z.object({
+    track_id: z.string(),
+    documents: z.array(zDocStatusResponse),
+    total_count: z.int(),
+    status_summary: z.record(z.string(), z.int())
 });
 /**
  * ValidationError
  */
-const zValidationError = z__namespace.object({
-    loc: z__namespace.array(z__namespace.union([z__namespace.string(), z__namespace.int()])),
-    msg: z__namespace.string(),
-    type: z__namespace.string(),
-    input: z__namespace.unknown().optional(),
-    ctx: z__namespace.record(z__namespace.string(), z__namespace.unknown()).optional()
+const zValidationError = z.object({
+    loc: z.array(z.union([z.string(), z.int()])),
+    msg: z.string(),
+    type: z.string(),
+    input: z.unknown().optional(),
+    ctx: z.record(z.string(), z.unknown()).optional()
 });
 /**
  * HTTPValidationError
  */
-z__namespace.object({
-    detail: z__namespace.array(zValidationError).optional()
+z.object({
+    detail: z.array(zValidationError).optional()
 });
 /**
  * Successful Response
@@ -1354,8 +1332,8 @@ const zDeleteRelationDocumentsDeleteRelationDeleteBody = zDeleteRelationRequest;
  * Successful Response
  */
 const zDeleteRelationDocumentsDeleteRelationDeleteResponse = zDeletionResult;
-const zGetTrackStatusDocumentsTrackStatusTrackIdGetPath = z__namespace.object({
-    track_id: z__namespace.string()
+const zGetTrackStatusDocumentsTrackStatusTrackIdGetPath = z.object({
+    track_id: z.string()
 });
 /**
  * Successful Response
@@ -1388,20 +1366,20 @@ const zQueryDataQueryDataPostBody = zQueryRequest;
  * Successful data retrieval response with structured RAG data
  */
 const zQueryDataQueryDataPostResponse = zQueryDataResponse;
-const zGetPopularLabelsGraphLabelPopularGetQuery = z__namespace.object({
-    limit: z__namespace.int().gte(1).lte(1000).optional().default(300)
+const zGetPopularLabelsGraphLabelPopularGetQuery = z.object({
+    limit: z.int().gte(1).lte(1000).optional().default(300)
 });
-const zSearchLabelsGraphLabelSearchGetQuery = z__namespace.object({
-    q: z__namespace.string(),
-    limit: z__namespace.int().gte(1).lte(100).optional().default(50)
+const zSearchLabelsGraphLabelSearchGetQuery = z.object({
+    q: z.string(),
+    limit: z.int().gte(1).lte(100).optional().default(50)
 });
-const zGetKnowledgeGraphGraphsGetQuery = z__namespace.object({
-    label: z__namespace.string(),
-    max_depth: z__namespace.int().gte(1).optional().default(3),
-    max_nodes: z__namespace.int().gte(1).optional().default(1000)
+const zGetKnowledgeGraphGraphsGetQuery = z.object({
+    label: z.string(),
+    max_depth: z.int().gte(1).optional().default(3),
+    max_nodes: z.int().gte(1).optional().default(1000)
 });
-const zCheckEntityExistsGraphEntityExistsGetQuery = z__namespace.object({
-    name: z__namespace.string()
+const zCheckEntityExistsGraphEntityExistsGetQuery = z.object({
+    name: z.string()
 });
 const zUpdateEntityGraphEntityEditPostBody = zEntityUpdateRequest;
 const zUpdateRelationGraphRelationEditPostBody = zRelationUpdateRequest;
@@ -1423,10 +1401,10 @@ const zMergeEntitiesGraphEntitiesMergePostBody = zEntityMergeRequest;
  * ScanResponse: A response object containing the scanning status and track_id
  */
 const scanForNewDocumentsDocumentsScanPost = (options) => (options?.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zScanForNewDocumentsDocumentsScanPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1452,10 +1430,10 @@ const scanForNewDocumentsDocumentsScanPost = (options) => (options?.client ?? cl
  * HTTPException: If an error occurs during text processing (500).
  */
 const insertTextDocumentsTextPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zInsertTextDocumentsTextPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zInsertTextDocumentsTextPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1485,10 +1463,10 @@ const insertTextDocumentsTextPost = (options) => (options.client ?? client).post
  * HTTPException: If an error occurs during text processing (500).
  */
 const insertTextsDocumentsTextsPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zInsertTextsDocumentsTextsPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zInsertTextsDocumentsTextsPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1522,10 +1500,10 @@ const insertTextsDocumentsTextsPost = (options) => (options.client ?? client).po
  * with status code 500 and error details in the detail field.
  */
 const clearDocumentsDocumentsDelete = (options) => (options?.client ?? client).delete({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zClearDocumentsDocumentsDeleteResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1558,10 +1536,10 @@ const clearDocumentsDocumentsDelete = (options) => (options?.client ?? client).d
  * HTTPException: If an error occurs while retrieving pipeline status (500)
  */
 const getPipelineStatusDocumentsPipelineStatusGet = (options) => (options?.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zGetPipelineStatusDocumentsPipelineStatusGetResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1594,10 +1572,10 @@ const getPipelineStatusDocumentsPipelineStatusGet = (options) => (options?.clien
  * - 500: If an unexpected internal error occurs during initialization.
  */
 const deleteDocumentDocumentsDeleteDocumentDelete = (options) => (options.client ?? client).delete({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zDeleteDocumentDocumentsDeleteDocumentDeleteBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteDocumentDocumentsDeleteDocumentDeleteResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1626,10 +1604,10 @@ const deleteDocumentDocumentsDeleteDocumentDelete = (options) => (options.client
  * HTTPException: If an error occurs during cache clearing (500).
  */
 const clearCacheDocumentsClearCachePost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zClearCacheDocumentsClearCachePostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zClearCacheDocumentsClearCachePostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1655,10 +1633,10 @@ const clearCacheDocumentsClearCachePost = (options) => (options.client ?? client
  * HTTPException: If the entity is not found (404) or an error occurs (500).
  */
 const deleteEntityDocumentsDeleteEntityDelete = (options) => (options.client ?? client).delete({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zDeleteEntityDocumentsDeleteEntityDeleteBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteEntityDocumentsDeleteEntityDeleteResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1684,10 +1662,10 @@ const deleteEntityDocumentsDeleteEntityDelete = (options) => (options.client ?? 
  * HTTPException: If the relation is not found (404) or an error occurs (500).
  */
 const deleteRelationDocumentsDeleteRelationDelete = (options) => (options.client ?? client).delete({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zDeleteRelationDocumentsDeleteRelationDeleteBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteRelationDocumentsDeleteRelationDeleteResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1719,10 +1697,10 @@ const deleteRelationDocumentsDeleteRelationDelete = (options) => (options.client
  * HTTPException: If track_id is invalid (400) or an error occurs (500).
  */
 const getTrackStatusDocumentsTrackStatusTrackIdGet = (options) => (options.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
         path: zGetTrackStatusDocumentsTrackStatusTrackIdGetPath,
-        query: z__namespace.never().optional()
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zGetTrackStatusDocumentsTrackStatusTrackIdGetResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1751,10 +1729,10 @@ const getTrackStatusDocumentsTrackStatusTrackIdGet = (options) => (options.clien
  * HTTPException: If an error occurs while retrieving documents (500).
  */
 const getDocumentsPaginatedDocumentsPaginatedPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zGetDocumentsPaginatedDocumentsPaginatedPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zGetDocumentsPaginatedDocumentsPaginatedPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1780,10 +1758,10 @@ const getDocumentsPaginatedDocumentsPaginatedPost = (options) => (options.client
  * HTTPException: If an error occurs while retrieving status counts (500).
  */
 const getDocumentStatusCountsDocumentsStatusCountsGet = (options) => (options?.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zGetDocumentStatusCountsDocumentsStatusCountsGetResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1817,10 +1795,10 @@ const getDocumentStatusCountsDocumentsStatusCountsGet = (options) => (options?.c
  * HTTPException: If an error occurs while initiating reprocessing (500).
  */
 const reprocessFailedDocumentsDocumentsReprocessFailedPost = (options) => (options?.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zReprocessFailedDocumentsDocumentsReprocessFailedPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1850,10 +1828,10 @@ const reprocessFailedDocumentsDocumentsReprocessFailedPost = (options) => (optio
  * HTTPException: If an error occurs while setting cancellation flag (500).
  */
 const cancelPipelineDocumentsCancelPipelinePost = (options) => (options?.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zCancelPipelineDocumentsCancelPipelinePostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -1941,10 +1919,10 @@ const cancelPipelineDocumentsCancelPipelinePost = (options) => (options?.client 
  * - 500: Internal processing error (e.g., LLM service unavailable)
  */
 const queryTextQueryPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zQueryTextQueryPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zQueryTextQueryPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2060,10 +2038,10 @@ const queryTextQueryPost = (options) => (options.client ?? client).post({
  * as structured data analysis typically requires source attribution.
  */
 const queryDataQueryDataPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zQueryDataQueryDataPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     responseValidator: async (data) => await zQueryDataQueryDataPostResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2083,10 +2061,10 @@ const queryDataQueryDataPost = (options) => (options.client ?? client).post({
  * List[str]: List of graph labels
  */
 const getGraphLabelsGraphLabelListGet = (options) => (options?.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/label/list',
@@ -2104,9 +2082,9 @@ const getGraphLabelsGraphLabelListGet = (options) => (options?.client ?? client)
  * List[str]: List of popular labels sorted by degree (highest first)
  */
 const getPopularLabelsGraphLabelPopularGet = (options) => (options?.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
         query: zGetPopularLabelsGraphLabelPopularGetQuery.optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2126,9 +2104,9 @@ const getPopularLabelsGraphLabelPopularGet = (options) => (options?.client ?? cl
  * List[str]: List of matching labels sorted by relevance
  */
 const searchLabelsGraphLabelSearchGet = (options) => (options.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
         query: zSearchLabelsGraphLabelSearchGetQuery
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2152,9 +2130,9 @@ const searchLabelsGraphLabelSearchGet = (options) => (options.client ?? client).
  * Dict[str, List[str]]: Knowledge graph for label
  */
 const getKnowledgeGraphGraphsGet = (options) => (options.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
         query: zGetKnowledgeGraphGraphsGetQuery
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2173,9 +2151,9 @@ const getKnowledgeGraphGraphsGet = (options) => (options.client ?? client).get({
  * Dict[str, bool]: Dictionary with 'exists' key indicating if entity exists
  */
 const checkEntityExistsGraphEntityExistsGet = (options) => (options.client ?? client).get({
-    requestValidator: async (data) => await z__namespace.object({
-        body: z__namespace.never().optional(),
-        path: z__namespace.never().optional(),
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: z.never().optional(),
         query: zCheckEntityExistsGraphEntityExistsGetQuery
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
@@ -2318,10 +2296,10 @@ const checkEntityExistsGraphEntityExistsGet = (options) => (options.client ?? cl
  * }
  */
 const updateEntityGraphEntityEditPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zUpdateEntityGraphEntityEditPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/entity/edit',
@@ -2343,10 +2321,10 @@ const updateEntityGraphEntityEditPost = (options) => (options.client ?? client).
  * Dict: Updated relation information
  */
 const updateRelationGraphRelationEditPost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zUpdateRelationGraphRelationEditPostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/relation/edit',
@@ -2402,10 +2380,10 @@ const updateRelationGraphRelationEditPost = (options) => (options.client ?? clie
  * }
  */
 const createEntityGraphEntityCreatePost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zCreateEntityGraphEntityCreatePostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/entity/create',
@@ -2473,10 +2451,10 @@ const createEntityGraphEntityCreatePost = (options) => (options.client ?? client
  * }
  */
 const createRelationGraphRelationCreatePost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zCreateRelationGraphRelationCreatePostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/relation/create',
@@ -2544,10 +2522,10 @@ const createRelationGraphRelationCreatePost = (options) => (options.client ?? cl
  * - This operation cannot be undone, so verify entity names before merging
  */
 const mergeEntitiesGraphEntitiesMergePost = (options) => (options.client ?? client).post({
-    requestValidator: async (data) => await z__namespace.object({
+    requestValidator: async (data) => await z.object({
         body: zMergeEntitiesGraphEntitiesMergePostBody,
-        path: z__namespace.never().optional(),
-        query: z__namespace.never().optional()
+        path: z.never().optional(),
+        query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { name: 'X-API-Key', type: 'apiKey' }],
     url: '/graph/entities/merge',
@@ -2594,7 +2572,7 @@ class LightRagServer {
             apiKey,
         };
         this.client = createClient(createConfig(this.params.clientOptions));
-        this.server = new server.McpServer(this.params.implementation, this.params.serverOptions);
+        this.server = new McpServer(this.params.implementation, this.params.serverOptions);
         this.init();
     }
     async handleSdkCall(sdkCall) {
@@ -2779,7 +2757,7 @@ class LightRagServer {
         this.server.registerTool('scan_documents', {
             title: 'Scan Documents',
             description: 'Trigger scanning process for new documents in the input directory',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(scanForNewDocumentsDocumentsScanPost({
             client: this.client,
         })));
@@ -2788,7 +2766,7 @@ class LightRagServer {
         this.server.registerTool('get_document_status_counts', {
             title: 'Get Document Status Counts',
             description: 'Get counts of documents by status',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(getDocumentStatusCountsDocumentsStatusCountsGet({
             client: this.client,
         })));
@@ -2797,7 +2775,7 @@ class LightRagServer {
         this.server.registerTool('clear_documents', {
             title: 'Clear Documents',
             description: 'Clear all documents from the RAG system',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(clearDocumentsDocumentsDelete({
             client: this.client,
         })));
@@ -2806,7 +2784,7 @@ class LightRagServer {
         this.server.registerTool('reprocess_failed', {
             title: 'Reprocess Failed Documents',
             description: 'Reprocess failed and pending documents',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(reprocessFailedDocumentsDocumentsReprocessFailedPost({
             client: this.client,
         })));
@@ -2815,7 +2793,7 @@ class LightRagServer {
         this.server.registerTool('get_pipeline_status', {
             title: 'Get Pipeline Status',
             description: 'Get the current status of the document indexing pipeline',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(getPipelineStatusDocumentsPipelineStatusGet({
             client: this.client,
         })));
@@ -2824,7 +2802,7 @@ class LightRagServer {
         this.server.registerTool('cancel_pipeline', {
             title: 'Cancel Pipeline',
             description: 'Request cancellation of the currently running pipeline',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(cancelPipelineDocumentsCancelPipelinePost({
             client: this.client,
         })));
@@ -2833,7 +2811,7 @@ class LightRagServer {
         this.server.registerTool('get_graph_labels', {
             title: 'Get Graph Labels',
             description: 'Get all graph labels',
-            inputSchema: z__namespace.object({}),
+            inputSchema: z.object({}),
         }, async () => this.handleSdkCall(getGraphLabelsGraphLabelListGet({
             client: this.client,
         })));
@@ -2917,7 +2895,7 @@ class LightRagServer {
         this.registerCancelPipeline();
     }
     async start() {
-        const transport = new server.StdioServerTransport();
+        const transport = new StdioServerTransport();
         await this.server.connect(transport);
         process.on('SIGINT', async () => {
             await this.close();
@@ -2930,7 +2908,7 @@ class LightRagServer {
 }
 
 (function () {
-  const env = {"__MCP__PACKAGE_VERSION":"1.0.0"};
+  const env = {"__MCP__PACKAGE_VERSION":"1.0.2"};
   if (typeof process === 'undefined') {
     globalThis.process = { env: env };
   } else if (process.env) {
@@ -2940,9 +2918,9 @@ class LightRagServer {
   }
 })();
 updateDotenv();
-commander.program
+program
     .version(process.env.__MCP__PACKAGE_VERSION, '-v, --version');
-commander.program
+program
     .description('Start LightRAG MCP server via stdio transport for integration with MCP clients (Claude Desktop, etc.)')
     .option('-t, --token <token>', 'API key for LightRAG authentication (overrides LIGHTRAG_API_KEY env variable)')
     .option('-u, --url <url>', 'LightRAG server URL (overrides LIGHTRAG_BASE_URL env variable)')
@@ -2953,5 +2931,5 @@ commander.program
     const server = new LightRagServer(options);
     await server.start();
 });
-commander.program
+program
     .parse(process.argv);

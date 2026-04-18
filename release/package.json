@@ -1,12 +1,10 @@
 {
   "name": "lightrag-mcp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "MCP server for LightRag",
-  "main": "index.js",
-  "module": "index.mjs",
-  "esnext": "index.mjs",
-  "jsnext:main": "index.mjs",
+  "main": "index.mjs",
   "types": "index.d.ts",
+  "type": "module",
   "bin": {
     "lightrag-mcp": "bin/mcp"
   },
