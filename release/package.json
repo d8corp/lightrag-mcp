@@ -1,6 +1,6 @@
 {
   "name": "lightrag-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for LightRag",
   "main": "index.mjs",
   "types": "index.d.ts",
@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/d8corp/lightrag-mcp",
   "dependencies": {
+    "@cfworker/json-schema": "^4.1.1",
     "@modelcontextprotocol/server": "^2.0.0-alpha.2",
     "commander": "^14.0.3",
     "dotenv": "^17.4.2",

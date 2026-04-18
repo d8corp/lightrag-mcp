@@ -1,5 +1,5 @@
 ;(function () {
-  const env = {"__MCP__PACKAGE_VERSION":"1.0.2"};
+  const env = {"__MCP__PACKAGE_VERSION":"1.0.3"};
   if (typeof process === 'undefined') {
     globalThis.process = { env: env };
   } else if (process.env) {
