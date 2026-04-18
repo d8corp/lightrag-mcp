@@ -12,7 +12,7 @@ const MULTILINE_STATEMENTS = MULTILINE_PREFIX_STATEMENTS.map(key => `multiline-$
 
 export default defineConfig([
   neostandard(),
-  globalIgnores(['release', 'node_modules', 'docs']),
+  globalIgnores(['build', 'node_modules', 'docs', 'src/gen']),
   {
     files: ['**/*.{ts,js}'],
     extends: [
@@ -92,7 +92,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['eslint.config.js'],
+    files: ['eslint.config.js', 'openapi-ts.config.ts'],
     rules: {
       'import/no-unused-modules': 'off',
       'import/no-named-as-default-member': 'off',

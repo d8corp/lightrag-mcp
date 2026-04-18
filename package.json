@@ -12,7 +12,8 @@
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "release": "innetjs release -p"
+    "release": "innetjs release -p",
+    "update:api": "openapi-ts"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
   "homepage": "https://github.com/d8corp/lightrag-mcp",
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@hey-api/openapi-ts": "^0.96.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
     "eslint": "^9.39.2",
