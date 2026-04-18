@@ -2,6 +2,7 @@ import type { CallToolResult, Implementation, ServerOptions } from '@modelcontex
 import { McpServer, StdioServerTransport } from '@modelcontextprotocol/server'
 
 import {
+  clearCacheDocumentsClearCachePost,
   createEntityGraphEntityCreatePost,
   createRelationGraphRelationCreatePost,
   deleteDocumentDocumentsDeleteDocumentDelete,
@@ -20,6 +21,7 @@ import type { Client, ClientOptions } from '../gen/client'
 import { createClient, createConfig } from '../gen/client'
 
 import {
+  zClearCacheRequest,
   zDeleteDocRequest,
   zDeleteEntityRequest,
   zDeleteRelationRequest,
@@ -336,6 +338,23 @@ export class LightRagServer {
     )
   }
 
+  private registerClearCache (): void {
+    this.server.registerTool(
+      'clear_cache',
+      {
+        title: 'Clear Cache',
+        description: 'Clear all cache data from the LLM response cache storage',
+        inputSchema: zClearCacheRequest,
+      },
+      async (body) => this.handleSdkCall(
+        clearCacheDocumentsClearCachePost({
+          client: this.client,
+          body,
+        }),
+      ),
+    )
+  }
+
   private init (): void {
     this.registerInsertText()
     this.registerInsertTexts()
@@ -343,6 +362,7 @@ export class LightRagServer {
     this.registerQueryData()
     this.registerGetDocumentsPaginated()
     this.registerDeleteDocument()
+    this.registerClearCache()
     this.registerCreateEntity()
     this.registerUpdateEntity()
     this.registerDeleteEntity()
