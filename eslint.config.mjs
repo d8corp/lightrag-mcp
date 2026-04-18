@@ -12,7 +12,7 @@ const MULTILINE_STATEMENTS = MULTILINE_PREFIX_STATEMENTS.map(key => `multiline-$
 
 export default defineConfig([
   neostandard(),
-  globalIgnores(['build', 'node_modules', 'docs', 'src/gen']),
+  globalIgnores(['release', 'node_modules', 'docs', 'src/gen']),
   {
     files: ['**/*.{ts,js}'],
     extends: [
