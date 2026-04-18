@@ -5,9 +5,9 @@ export function updateDotenv () {
   const { __MCP__PACKAGE_VERSION: before } = process.env
   delete process.env.__MCP__PACKAGE_VERSION
 
-  expand(config())
+  expand(config({ quiet: true }))
 
-  if (!('__MCP__PACKAGE_VERSION' in process.env)) {
+  if (!process.env.__MCP__PACKAGE_VERSION) {
     process.env.__MCP__PACKAGE_VERSION = before
   }
 }
