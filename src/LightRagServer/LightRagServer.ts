@@ -3,18 +3,24 @@ import { McpServer, StdioServerTransport } from '@modelcontextprotocol/server'
 import * as z from 'zod'
 
 import {
+  cancelPipelineDocumentsCancelPipelinePost,
   clearCacheDocumentsClearCachePost,
+  clearDocumentsDocumentsDelete,
   createEntityGraphEntityCreatePost,
   createRelationGraphRelationCreatePost,
   deleteDocumentDocumentsDeleteDocumentDelete,
   deleteEntityDocumentsDeleteEntityDelete,
   deleteRelationDocumentsDeleteRelationDelete,
   getDocumentsPaginatedDocumentsPaginatedPost,
+  getDocumentStatusCountsDocumentsStatusCountsGet,
+  getGraphLabelsGraphLabelListGet,
+  getPipelineStatusDocumentsPipelineStatusGet,
   insertTextDocumentsTextPost,
   insertTextsDocumentsTextsPost,
   mergeEntitiesGraphEntitiesMergePost,
   queryDataQueryDataPost,
   queryTextQueryPost,
+  reprocessFailedDocumentsDocumentsReprocessFailedPost,
   scanForNewDocumentsDocumentsScanPost,
   updateEntityGraphEntityEditPost,
   updateRelationGraphRelationEditPost,
@@ -373,15 +379,115 @@ export class LightRagServer {
     )
   }
 
+  private registerGetDocumentStatusCounts (): void {
+    this.server.registerTool(
+      'get_document_status_counts',
+      {
+        title: 'Get Document Status Counts',
+        description: 'Get counts of documents by status',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        getDocumentStatusCountsDocumentsStatusCountsGet({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
+  private registerClearDocuments (): void {
+    this.server.registerTool(
+      'clear_documents',
+      {
+        title: 'Clear Documents',
+        description: 'Clear all documents from the RAG system',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        clearDocumentsDocumentsDelete({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
+  private registerReprocessFailed (): void {
+    this.server.registerTool(
+      'reprocess_failed',
+      {
+        title: 'Reprocess Failed Documents',
+        description: 'Reprocess failed and pending documents',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        reprocessFailedDocumentsDocumentsReprocessFailedPost({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
+  private registerGetPipelineStatus (): void {
+    this.server.registerTool(
+      'get_pipeline_status',
+      {
+        title: 'Get Pipeline Status',
+        description: 'Get the current status of the document indexing pipeline',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        getPipelineStatusDocumentsPipelineStatusGet({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
+  private registerCancelPipeline (): void {
+    this.server.registerTool(
+      'cancel_pipeline',
+      {
+        title: 'Cancel Pipeline',
+        description: 'Request cancellation of the currently running pipeline',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        cancelPipelineDocumentsCancelPipelinePost({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
+  private registerGetGraphLabels (): void {
+    this.server.registerTool(
+      'get_graph_labels',
+      {
+        title: 'Get Graph Labels',
+        description: 'Get all graph labels',
+        inputSchema: z.object({}),
+      },
+      async () => this.handleSdkCall(
+        getGraphLabelsGraphLabelListGet({
+          client: this.client,
+        }),
+      ),
+    )
+  }
+
   private init (): void {
     this.registerInsertText()
     this.registerInsertTexts()
     this.registerScanDocuments()
+    this.registerGetDocumentsPaginated()
+    this.registerGetDocumentStatusCounts()
+    this.registerDeleteDocument()
+    this.registerClearDocuments()
+    this.registerClearCache()
+    this.registerReprocessFailed()
     this.registerQueryText()
     this.registerQueryData()
-    this.registerGetDocumentsPaginated()
-    this.registerDeleteDocument()
-    this.registerClearCache()
+    this.registerGetGraphLabels()
     this.registerCreateEntity()
     this.registerUpdateEntity()
     this.registerDeleteEntity()
@@ -389,6 +495,8 @@ export class LightRagServer {
     this.registerCreateRelation()
     this.registerUpdateRelation()
     this.registerDeleteRelation()
+    this.registerGetPipelineStatus()
+    this.registerCancelPipeline()
   }
 
   async start (): Promise<void> {
