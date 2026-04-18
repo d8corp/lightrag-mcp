@@ -54,12 +54,6 @@ import {
   zSearchLabelsGraphLabelSearchGetQuery,
 } from '../gen/zod.gen'
 
-export interface LightRagServerParams {
-  implementation?: Implementation
-  serverOptions?: ServerOptions
-  clientOptions?: ClientOptions
-}
-
 interface SDKParams<T, E> {
   data?: T
   error?: E
@@ -68,6 +62,12 @@ interface SDKParams<T, E> {
 }
 
 type LightRagServerInnerParams = Required<LightRagServerParams>
+
+export interface LightRagServerParams {
+  implementation?: Implementation
+  serverOptions?: ServerOptions
+  clientOptions?: ClientOptions
+}
 
 export class LightRagServer {
   private readonly server: McpServer
