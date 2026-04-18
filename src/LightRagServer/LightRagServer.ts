@@ -4,6 +4,7 @@ import * as z from 'zod'
 
 import {
   cancelPipelineDocumentsCancelPipelinePost,
+  checkEntityExistsGraphEntityExistsGet,
   clearCacheDocumentsClearCachePost,
   clearDocumentsDocumentsDelete,
   createEntityGraphEntityCreatePost,
@@ -14,7 +15,9 @@ import {
   getDocumentsPaginatedDocumentsPaginatedPost,
   getDocumentStatusCountsDocumentsStatusCountsGet,
   getGraphLabelsGraphLabelListGet,
+  getKnowledgeGraphGraphsGet,
   getPipelineStatusDocumentsPipelineStatusGet,
+  getPopularLabelsGraphLabelPopularGet,
   getTrackStatusDocumentsTrackStatusTrackIdGet,
   insertTextDocumentsTextPost,
   insertTextsDocumentsTextsPost,
@@ -23,6 +26,7 @@ import {
   queryTextQueryPost,
   reprocessFailedDocumentsDocumentsReprocessFailedPost,
   scanForNewDocumentsDocumentsScanPost,
+  searchLabelsGraphLabelSearchGet,
   updateEntityGraphEntityEditPost,
   updateRelationGraphRelationEditPost,
 } from '../gen'
@@ -30,6 +34,7 @@ import type { Client, ClientOptions } from '../gen/client'
 import { createClient, createConfig } from '../gen/client'
 
 import {
+  zCheckEntityExistsGraphEntityExistsGetQuery,
   zClearCacheRequest,
   zDeleteDocRequest,
   zDeleteEntityRequest,
@@ -38,12 +43,15 @@ import {
   zEntityCreateRequest,
   zEntityMergeRequest,
   zEntityUpdateRequest,
+  zGetKnowledgeGraphGraphsGetQuery,
+  zGetPopularLabelsGraphLabelPopularGetQuery,
   zGetTrackStatusDocumentsTrackStatusTrackIdGetPath,
   zInsertTextRequest,
   zInsertTextsRequest,
   zQueryRequest,
   zRelationCreateRequest,
   zRelationUpdateRequest,
+  zSearchLabelsGraphLabelSearchGetQuery,
 } from '../gen/zod.gen'
 
 export interface LightRagServerParams {
@@ -494,6 +502,74 @@ export class LightRagServer {
     )
   }
 
+  private registerGetPopularLabels (): void {
+    this.server.registerTool(
+      'get_popular_labels',
+      {
+        title: 'Get Popular Labels',
+        description: 'Get popular labels by node degree (most connected entities)',
+        inputSchema: zGetPopularLabelsGraphLabelPopularGetQuery,
+      },
+      async (query) => this.handleSdkCall(
+        getPopularLabelsGraphLabelPopularGet({
+          client: this.client,
+          query,
+        }),
+      ),
+    )
+  }
+
+  private registerSearchLabels (): void {
+    this.server.registerTool(
+      'search_labels',
+      {
+        title: 'Search Labels',
+        description: 'Search labels with fuzzy matching',
+        inputSchema: zSearchLabelsGraphLabelSearchGetQuery,
+      },
+      async (query) => this.handleSdkCall(
+        searchLabelsGraphLabelSearchGet({
+          client: this.client,
+          query,
+        }),
+      ),
+    )
+  }
+
+  private registerGetKnowledgeGraph (): void {
+    this.server.registerTool(
+      'get_knowledge_graph',
+      {
+        title: 'Get Knowledge Graph',
+        description: 'Retrieve a connected subgraph of nodes',
+        inputSchema: zGetKnowledgeGraphGraphsGetQuery,
+      },
+      async (query) => this.handleSdkCall(
+        getKnowledgeGraphGraphsGet({
+          client: this.client,
+          query,
+        }),
+      ),
+    )
+  }
+
+  private registerCheckEntityExists (): void {
+    this.server.registerTool(
+      'check_entity_exists',
+      {
+        title: 'Check Entity Exists',
+        description: 'Check if an entity with the given name exists in the knowledge graph',
+        inputSchema: zCheckEntityExistsGraphEntityExistsGetQuery,
+      },
+      async (query) => this.handleSdkCall(
+        checkEntityExistsGraphEntityExistsGet({
+          client: this.client,
+          query,
+        }),
+      ),
+    )
+  }
+
   private init (): void {
     this.registerInsertText()
     this.registerInsertTexts()
@@ -508,6 +584,10 @@ export class LightRagServer {
     this.registerQueryText()
     this.registerQueryData()
     this.registerGetGraphLabels()
+    this.registerGetPopularLabels()
+    this.registerSearchLabels()
+    this.registerGetKnowledgeGraph()
+    this.registerCheckEntityExists()
     this.registerCreateEntity()
     this.registerUpdateEntity()
     this.registerDeleteEntity()
