@@ -30,7 +30,7 @@ import {
   updateEntityGraphEntityEditPost,
   updateRelationGraphRelationEditPost,
 } from '../gen'
-import type { Client, ClientOptions } from '../gen/client'
+import type { Client, Config } from '../gen/client'
 import { createClient, createConfig } from '../gen/client'
 
 import {
@@ -64,9 +64,10 @@ interface SDKParams<T, E> {
 type LightRagServerInnerParams = Required<LightRagServerParams>
 
 export interface LightRagServerParams {
+  apiKey?: string
   implementation?: Implementation
   serverOptions?: ServerOptions
-  clientOptions?: ClientOptions
+  clientOptions?: Config
 }
 
 export class LightRagServer {
@@ -75,15 +76,41 @@ export class LightRagServer {
   private readonly client: Client
 
   constructor (params: LightRagServerParams = {}) {
+    const baseUrl = process.env.LIGHTRAG_BASE_URL || 'http://localhost:9621'
+    const apiKey = params.apiKey ?? process.env.LIGHTRAG_API_KEY
+
+    if (!apiKey) throw Error('Use apiKey option or LIGHTRAG_API_KEY')
+
+    const optionHeaders = params.clientOptions?.headers
+
+    const normHeaders: Record<string, unknown> = optionHeaders instanceof Headers
+      ? Object.fromEntries(optionHeaders.entries())
+      : Array.isArray(optionHeaders)
+        ? Object.fromEntries(optionHeaders)
+        : optionHeaders ?? {}
+
+    const headers: HeadersInit = {
+      'X-API-Key': apiKey,
+      ...normHeaders,
+    }
+
+    const clientOptions: Config = {
+      baseUrl,
+      ...params.clientOptions,
+      headers,
+    }
+
+    const implementation: Implementation = {
+      name: 'lightrag-mcp',
+      version: '1.0.0',
+      ...params.implementation,
+    }
+
     this.params = {
-      serverOptions: {},
-      clientOptions: {},
-      ...params,
-      implementation: {
-        name: 'lightrag-mcp',
-        version: '1.0.0',
-        ...params.implementation,
-      },
+      serverOptions: params.serverOptions ?? {},
+      clientOptions,
+      implementation,
+      apiKey,
     }
 
     this.client = createClient(createConfig(this.params.clientOptions))
