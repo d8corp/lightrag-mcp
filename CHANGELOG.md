@@ -2,6 +2,10 @@
 
 ## v1.0
 
+### v1.0.12 [![23.04.2026](https://img.shields.io/date/1776933625)](https://github.com/d8corp/lightrag-mcp/tree/v1.0.12)
+
+- Change README
+
 ### v1.0.11 [![18.04.2026](https://img.shields.io/date/1776541688)](https://github.com/d8corp/lightrag-mcp/tree/v1.0.11)
 
 - Fix bugs
